@@ -37,10 +37,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',                 # enables Cross-Origin Resource Sharing for frontend calls
+    'rest_framework',              # Django REST Framework for building JSON APIs
+    'api',                         # our local app housing all API code
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'corsheaders.middleware.CorsMiddleware',         # processes CORS headers early in the chain
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -48,6 +52,28 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+# Allow our React dev servers to talk to Django during development
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",       # Create React App default dev URL
+    "http://127.0.0.1:3000",       # loopback variant for CRA
+    "http://localhost:5173",       # Vite default dev URL
+    "http://127.0.0.1:5173",       # loopback variant for Vite
+]
+
+# Trust those origins for CSRF as well (Django form posts, session auth, etc.)
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:3000",       # trust CRA origin for CSRF
+    "http://127.0.0.1:3000",       # loopback variant
+    "http://localhost:5173",       # trust Vite origin
+    "http://127.0.0.1:5173",       # loopback variant
+]
+
+# REST Framework global settings placeholder
+REST_FRAMEWORK = {
+    # 'DEFAULT_AUTHENTICATION_CLASSES': [...],  # we’ll set auth later
+    # 'DEFAULT_PERMISSION_CLASSES':    [...],  # and perms later
+}
 
 ROOT_URLCONF = 'config.urls'
 
