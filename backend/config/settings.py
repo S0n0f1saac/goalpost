@@ -39,19 +39,22 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'corsheaders',                 # enables Cross-Origin Resource Sharing for frontend calls
     'rest_framework',              # Django REST Framework for building JSON APIs
-    'api',                         # our local app housing all API code
+    'api',                          # our local app housing all API code
+    'accounts',                     # our auth endpoints app
 ]
 
+# settings.py — MIDDLEWARE
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'corsheaders.middleware.CorsMiddleware',         # processes CORS headers early in the chain
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.security.SecurityMiddleware',        # security headers and protections
+    'corsheaders.middleware.CorsMiddleware',                # handle CORS early so responses get CORS headers
+    'django.contrib.sessions.middleware.SessionMiddleware', # manage server-side sessions (must be before Common)
+    'django.middleware.common.CommonMiddleware',            # common utilities (ETags, URL rewriting, etc.)
+    'django.middleware.csrf.CsrfViewMiddleware',            # protect against CSRF attacks
+    'django.contrib.auth.middleware.AuthenticationMiddleware', # attach user/auth to request
+    'django.contrib.messages.middleware.MessageMiddleware', # one-off notification messages
+    'django.middleware.clickjacking.XFrameOptionsMiddleware', # X-Frame-Options header
 ]
+
 
 # Allow our React dev servers to talk to Django during development
 CORS_ALLOWED_ORIGINS = [
@@ -146,3 +149,23 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# settings.py — DRF + JWT + CORS config (order here is flexible; bottom is fine)
+from datetime import timedelta                             # used to set token lifetimes
+
+REST_FRAMEWORK = {                                         # DRF global settings
+    'DEFAULT_AUTHENTICATION_CLASSES': (                    # list of auth backends
+        'rest_framework_simplejwt.authentication.JWTAuthentication',  # use JWT for API auth
+    ),
+}
+
+SIMPLE_JWT = {                                             # SimpleJWT behavior
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),        # short-lived access token
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),           # longer-lived refresh token
+}
+
+CORS_ALLOW_ALL_ORIGINS = True                              # allow all origins in dev (tighten later)
+# CORS_ALLOWED_ORIGINS = [                                 # prefer this in prod with explicit origins
+#     'http://localhost:3000',                             # frontend dev server
+# ]
+
