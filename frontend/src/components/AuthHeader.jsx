@@ -26,6 +26,7 @@ export default function AuthHeader() {                     // default export com
       <nav style={{ display: "flex", gap: 12 }}>          {/* simple nav links */}
         <Link to="/">Home</Link>                           {/* protected home */}
         <Link to="/login">Login</Link>                     {/* public login */}
+        <Link to="/register">Register</Link>                {/* link to sign up */} 
       </nav>
       <div>                                               {/* right side user area */}
         {user ? (                                         // if logged in
