@@ -1,43 +1,4 @@
-# ===== PYTHON (Django) =====
-__pycache__/              # Python bytecode cache directories
-*.py[cod]                 # Compiled Python files
-*.pyo                     # Older compiled Python optimization files
-*.pyd                     # Python C-extension binaries (Windows)
-*.env                     # Local Python env files that may hold secrets
-.venv/                    # Virtual environment directory
-venv/                     # Alternate virtual env directory name
-env/                      # Another common virtual env name
-*.sqlite3                 # SQLite DB files (dev only, not for prod)
-db.sqlite3                # Typical Django default DB file
-*.log                     # Log files created by Django or scripts
-media/                    # User-uploaded media (store in cloud in prod)
-staticfiles/              # Collected static files (generated)
-.DS_Store                 # macOS metadata files (safe to ignore on any OS)
-
-# ===== DJANGO SECRETS =====
-*.secret                  # Any file you use to stash secrets
-*.key                     # Keys (don’t commit private keys)
-*.pem                     # PEM key material
-*.crt                     # Cert files
-*.cfg                     # Local config files
-settings_local.py         # Local-only Django settings override (if used)
-.env.local                # Local-only environment file
-
-# ===== NODE (React) =====
-node_modules/             # Installed Node packages (recreated by npm/yarn/pnpm)
-dist/                     # Build output for some tools
-build/                    # CRA/Next/etc build output
-.cache/                   # Tooling caches
-.npm/                     # npm cache
-.yarn/                    # Yarn cache
-.pnpm-store/              # pnpm store
-
-# ===== TOOLING / IDE =====
-.vscode/                  # VS Code workspace settings
-.idea/                    # JetBrains IDE settings
-*.iml                     # IntelliJ module files
-
-# ===== OS / MISC =====
-Thumbs.db                 # Windows thumbnail cache
-*.swp                     # Vim swap files
-*.tmp                     # Temp files
+__pycache__/
+*.py[cod]
+db.sqlite3
+node_modules/

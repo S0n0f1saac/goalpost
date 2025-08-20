@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'rest_framework',              # Django REST Framework for building JSON APIs
     'api',                          # our local app housing all API code
     'accounts',                     # our auth endpoints app
+    'profiles',
 ]
 
 # settings.py — MIDDLEWARE
