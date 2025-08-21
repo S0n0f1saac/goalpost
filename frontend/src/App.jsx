@@ -6,6 +6,7 @@ import ProtectedRoute from "./routes/ProtectedRoute.jsx";         // guard wrapp
 import AuthHeader from "./components/AuthHeader.jsx";             // top auth header
 import Register from "./pages/Register.jsx";                      // public register page
 import Profile from "./pages/Profile.jsx";                        // profile page
+import Feed from "./pages/Feed.jsx"; 
 
 export default function App() {                                   // export the root component
   return (                                                        // return JSX tree
@@ -17,6 +18,7 @@ export default function App() {                                   // export the 
         <Route element={<ProtectedRoute />}>                      {/* wrap protected routes */}
           <Route path="/" element={<Home />} />                   {/* PROTECTED: / */}
           <Route path ="/profile" element={<Profile />} /> 
+          <Route path="/feed" element={<Feed />} /> 
           {/* add more protected routes here (e.g., /feed, /profile, /teams, etc.) */}
         </Route>
         {/* you can add a catch-all 404 route if desired */}

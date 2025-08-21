@@ -167,4 +167,20 @@ export async function profileUpdate(payload) {                                  
   return r.json();                                                                           // return updated profile JSON
 }                                                                                            // end profileUpdate
 
+// --- Posts API helpers ----------------------------------------------------------------------
+// list recent posts (global feed)
+export async function postsList(limit = 20) {                         // limit controls page size
+  const r = await api(`/posts/?limit=${encodeURIComponent(limit)}`);  // GET /api/posts/?limit=N
+  if (!r.ok) throw new Error("Failed to load posts");                 // bubble up errors
+  return r.json();                                                    // return array of posts
+}
+// create a new post
+export async function postCreate({ text, media_url = "" }) {          // payload contains text + optional media
+  const r = await api("/posts/", { method: "POST", body: { text, media_url } }); // POST /api/posts/
+  if (!r.ok) throw new Error("Failed to create post");                // bubble up errors
+  return r.json();                                                    // return created post
+}
+// --------------------------------------------------------------------------------------------
+
+
 

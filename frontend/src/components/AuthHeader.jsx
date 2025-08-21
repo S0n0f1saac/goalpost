@@ -25,6 +25,7 @@ export default function AuthHeader() {                               // DEFAULT 
         <Link to="/profile" className="hover:underline">Profile</Link> {/* link to profile page */}
         <Link to="/login" className="hover:underline">Login</Link>  {/* link to login page */}
         <Link to="/register" className="hover:underline">Register</Link> {/* link to register page */}
+        <Link to="/feed" className="hover:underline">Feed</Link>
       </nav>                                                         {/* end nav */}
       <div>                                                          {/* right: auth state */}
         {user ? (                                                    // if logged in

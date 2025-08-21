@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'api',                          # our local app housing all API code
     'accounts',                     # our auth endpoints app
     'profiles',
+    'posts',
 ]
 
 # settings.py — MIDDLEWARE
