@@ -1,45 +1,43 @@
-// frontend/src/components/AuthHeader.jsx                  // small header showing auth state
-import { useEffect, useState } from "react";               // React hooks for state/effects
-import { me, logout, getAccessToken } from "../lib/api.js";// our API helpers
-import { useNavigate, Link } from "react-router-dom";      // router navigation + links
+// frontend/src/components/AuthHeader.jsx                            // path + purpose: top navigation with auth state
+import { useEffect, useState } from "react";                         // React hooks for state/effects
+import { Link, useNavigate } from "react-router-dom";                // router links + navigation hook
+import { me, logout, getAccessToken } from "/src/lib/api.js";        // API helpers for auth state
 
-export default function AuthHeader() {                     // default export component
-  const [user, setUser] = useState(null);                  // holds current user object or null
-  const navigate = useNavigate();                          // lets us programmatically navigate
+export default function AuthHeader() {                               // DEFAULT export so `import AuthHeader ...` works
+  const [user, setUser] = useState(null);                            // current user object (or null if logged out)
+  const navigate = useNavigate();                                    // programmatic navigation after logout
 
-  useEffect(() => {                                        // run once on mount
-    if (!getAccessToken()) return;                         // if no token, skip fetching /me
-    me().then(setUser).catch(() => setUser(null));         // try to fetch /me; on error clear user
-  }, []);                                                  // empty deps → run once
+  useEffect(() => {                                                   // run once on mount to hydrate user (if token exists)
+    if (!getAccessToken()) return;                                   // if no token, skip fetching /me
+    me().then(setUser).catch(() => setUser(null));                   // try to load user; clear on failure
+  }, []);                                                            // empty deps → run once
 
-  function onLogout() {                                    // handler for logout click
-    logout();                                              // clear tokens from storage
-    setUser(null);                                         // clear user in state
-    navigate("/login", { replace: true });                 // jump to login page
-  }
+  function onLogout() {                                              // logout click handler
+    logout();                                                        // clear tokens in localStorage
+    setUser(null);                                                   // clear local user state
+    navigate("/login", { replace: true });                           // redirect to login page
+  }                                                                  // end onLogout
 
-  return (                                                 // render a very small top bar
-    <div style={{                                         // inline styles to keep it simple
-      display: "flex", justifyContent: "space-between", 
-      padding: "10px 14px", borderBottom: "1px solid #eee"
-    }}>
-      <nav style={{ display: "flex", gap: 12 }}>          {/* simple nav links */}
-        <Link to="/">Home</Link>                           {/* protected home */}
-        <Link to="/login">Login</Link>                     {/* public login */}
-        <Link to="/register">Register</Link>                {/* link to sign up */} 
-      </nav>
-      <div>                                               {/* right side user area */}
-        {user ? (                                         // if logged in
-          <>
-            <span style={{ marginRight: 8 }}>             {/* show username */}
-              {user.username}
-            </span>
-            <button onClick={onLogout}>Logout</button>    {/* logout button */}
-          </>
-        ) : (                                              // if logged out
-          <span>Not signed in</span>                       // simple text
+  return (                                                           // render the header bar
+    <div className="flex items-center justify-between px-4 py-2 border-b border-brand-100"> {/* bar container */}
+      <nav className="flex gap-3">                                  {/* left: simple nav links */}
+        <Link to="/" className="hover:underline">Home</Link>        {/* link to protected home */}
+        <Link to="/profile" className="hover:underline">Profile</Link> {/* link to profile page */}
+        <Link to="/login" className="hover:underline">Login</Link>  {/* link to login page */}
+        <Link to="/register" className="hover:underline">Register</Link> {/* link to register page */}
+      </nav>                                                         {/* end nav */}
+      <div>                                                          {/* right: auth state */}
+        {user ? (                                                    // if logged in
+          <span className="flex items-center gap-2">                 {/* username + logout button */}
+            <span>{user.username}</span>                             {/* show username */}
+            <button onClick={onLogout} className="text-sm underline">Logout</button> {/* logout */}
+          </span>
+        ) : (                                                        // if logged out
+          <span className="text-sm text-muted">Not signed in</span>  // simple text 
         )}
-      </div>
-    </div>
-  );
-}
+      </div>                                                         {/* end right side */}
+    </div>                                                           // end bar container
+  );                                                                 // end render
+}                                                                    // end component
+
+
