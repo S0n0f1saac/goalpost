@@ -28,3 +28,25 @@ class Profile(models.Model):                               # user profile linked
 
     def __str__(self):                                     # human-readable repr
         return f"{self.user.username} ({self.role})"       # e.g., "testuser (player)"
+
+class Follow(models.Model):                          # a "user A follows user B" relation row
+    follower = models.ForeignKey(                    # who is doing the following
+        settings.AUTH_USER_MODEL,                    # FK → auth user
+        on_delete=models.CASCADE,                    # delete relations if follower is deleted
+        related_name="following",                    # reverse: user.following -> qs of Follow
+    )
+    following = models.ForeignKey(                   # who is being followed
+        settings.AUTH_USER_MODEL,                    # FK → auth user
+        on_delete=models.CASCADE,                    # delete relations if followee is deleted
+        related_name="followers",                    # reverse: user.followers -> qs of Follow
+    )
+    created_at = models.DateTimeField(auto_now_add=True)  # timestamp the follow event
+
+    class Meta:                                      # model-level constraints/meta
+        unique_together = ("follower", "following")  # a pair can exist only once
+        indexes = [                                  # helpful index for lookups
+            models.Index(fields=["follower", "following"]),  # composite index
+        ]
+
+    def __str__(self):                               # human-readable
+        return f"{self.follower_id} -> {self.following_id}"  # e.g., "1 -> 2"
