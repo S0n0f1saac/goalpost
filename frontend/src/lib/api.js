@@ -181,6 +181,33 @@ export async function postCreate({ text, media_url = "" }) {          // payload
   return r.json();                                                    // return created post
 }
 // --------------------------------------------------------------------------------------------
+// --- Follow + My Feed helpers --------------------------------------------------------------
+// get ids I follow
+export async function followingList() {                         // fetch who I follow
+  const r = await api("/following/");                           // GET /api/following/
+  if (!r.ok) throw new Error("Failed to load following");       // error out on non-2xx
+  return r.json();                                              // -> { following_ids: number[] }
+}
+// follow a user
+export async function follow(userId) {                          // start following target user
+  const r = await api(`/follow/${userId}/`, { method: "POST" });// POST /api/follow/<id>/
+  if (!r.ok) throw new Error("Failed to follow");               // throw on error
+  return r.json();                                              // -> { detail: "followed" | "already following" }
+}
+// unfollow a user
+export async function unfollow(userId) {                        // stop following target user
+  const r = await api(`/follow/${userId}/`, { method: "DELETE"});// DELETE /api/follow/<id>/
+  if (!r.ok) throw new Error("Failed to unfollow");             // throw on error
+  return r.json();                                              // -> { detail: "unfollowed" | "not following" }
+}
+// list my feed (me + people I follow)
+export async function postsMy(limit = 20) {                     // personalized feed
+  const r = await api(`/posts/my/?limit=${encodeURIComponent(limit)}`); // GET /api/posts/my/
+  if (!r.ok) throw new Error("Failed to load my feed");         // throw on error
+  return r.json();                                              // -> Post[]
+}
+// -------------------------------------------------------------------------------------------
+
 
 
 
