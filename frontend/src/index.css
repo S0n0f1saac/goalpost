@@ -1,8 +1,20 @@
-/* frontend/src/index.css */
-@import "./styles/theme.css";                           /* your tokens (optional) */
+/* frontend/src/index.css                                            */ /* global stylesheet entry for Tailwind + theme vars   */
+@import "./styles/theme.css";                                         /* must come BEFORE all other statements               */
 
-@tailwind base;                                         /* inject reset/base */
-@tailwind components;                                   /* component layer */
-@tailwind utilities;                                    /* utility classes */
+@tailwind base;                                                       /* Tailwind reset + base layer                          */
+@tailwind components;                                                 /* Tailwind components layer                            */
+@tailwind utilities;                                                  /* Tailwind utilities layer                             */
+
+/* Base element defaults using our tokens (kept inside base layer)   */ /* small ergonomic defaults                             */
+@layer base {
+  html, body {                                                        /* page fundamentals                                    */
+    @apply bg-surface text-text;                                      /* use semantic bg/text                                 */
+  }
+  :focus-visible {                                                    /* consistent focus outline                             */
+    outline: 2px solid var(--focus);                                  /* 2px focus ring                                       */
+    outline-offset: 2px;                                              /* offset for clarity                                   */
+  }
+}
+
 
 
