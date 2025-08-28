@@ -1,5 +1,17 @@
 /* frontend/src/styles/theme.css                                   */ /* file path + purpose: theme tokens as CSS variables */
 /* We define semantic variables for light + dark. Components only  */ /* consume these variables, never raw hex codes.      */
+/* We also define global typography so the entire app uses Inter.  */ /* load once at app entry (before Tailwind layers).   */
+
+/* ---------- Load Inter Variable (no CDN) ---------- */              /* uses local node_modules for performance            */
+@import "@fontsource-variable/nunito/index.css";                       /* provides 'Inter Variable' w/ weight axis          */
+
+/* ---------- Global typography tokens ---------- */                   /* shared tokens consumed by Tailwind + raw CSS      */
+:root {                                                                /* root scope for typography vars                    */
+  --font-sans: "Nunito Variable", "Nunito", system-ui, -apple-system,
+               "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;      /* final generic fallback                            */
+  --font-feature-settings: "liga" 1, "calt" 1;                         /* enable standard ligatures + contextual alternates */
+  --font-variation-settings: "wght" 400;                               /* default weight for variable font                  */
+}
 
 /* ---------- Light theme (default) ---------- */                      /* light theme scope on :root; applies by default     */
 :root[data-theme="light"],
@@ -8,7 +20,7 @@
   --surface:       #F7ECDE;                                            /* cards, inputs, bars                                */
   --surface-2:     #E9DAC1;                                            /* raised surfaces (menus/modals)                     */
   --text:          #2C3639;                                            /* primary text/icons                                 */
-  --muted:         rgba(63, 78, 79, 0.70);                              /* secondary text/icons (~#3F4E4F @ 70%)              */
+  --muted:         rgba(63, 78, 79, 0.70);                             /* secondary text/icons (~#3F4E4F @ 70%)              */
   --border:        #E6DCCF;                                            /* hairlines, input borders                           */
   --accent:        #54BAB9;                                            /* brand/interactive                                  */
   --on-accent:     #FFFFFF;                                            /* text on accent                                     */
@@ -43,13 +55,41 @@
   --surface:       #3F4E4F;                                            /* cards, inputs, bars                                */
   --surface-2:     #4A5859;                                            /* raised surfaces                                    */
   --text:          #DCD7C9;                                            /* primary text/icons                                 */
-  --muted:         rgba(200, 195, 182, 0.80);                           /* secondary text (~#C8C3B6 @ 80%)                    */
+  --muted:         rgba(200, 195, 182, 0.80);                          /* secondary text (~#C8C3B6 @ 80%)                    */
   --border:        #8E9A9B;                                            /* hairlines, input borders                           */
   --accent:        #DCD7C9;                                            /* brand/interactive                                  */
   --on-accent:     #2C3639;                                            /* text on accent                                     */
   --focus:         #DCD7C9;                                            /* focus ring color                                   */
+  /* radii/shadows/durations/status remain same across themes        */ /* keep consistent unless you want variants           */
+}
 
-  /* radii/shadows/durations/status stay the same across themes       */ /* keep consistent unless you want variants           */
+/* ---------- Global element defaults ---------- */                      /* ensure appwide font + legibility                   */
+html {                                                                   /* top-level element for inherited font               */
+  font-family: var(--font-sans);                                        /* apply Inter Variable across the entire app         */
+  -webkit-font-smoothing: antialiased;                                  /* better glyph rendering on WebKit                   */
+  -moz-osx-font-smoothing: grayscale;                                   /* better glyph rendering on Firefox/macOS            */
+  font-feature-settings: var(--font-feature-settings);                  /* enable typographic features globally               */
+  font-variation-settings: var(--font-variation-settings);              /* default variable font axis                         */
+  background: var(--bg);                                                /* set page background to theme token                 */
+  color: var(--text);                                                   /* set default text color to theme token              */
+}
+
+body {                                                                   /* body typographic rhythm                            */
+  line-height: 1.45;                                                    /* matches UI guidelines for readable body text       */
+  text-rendering: optimizeLegibility;                                   /* hint for improved kerning/ligatures                */
+  margin: 0;                                                            /* remove default margins to avoid layout shifts      */
+}
+
+/* Ensure form controls inherit font properly across browsers         */ /* avoids mismatched fonts inside inputs/buttons      */
+input, button, textarea, select {                                       /* target all common form controls                    */
+  font: inherit;                                                        /* inherit family/size/weight from parent             */
+  color: inherit;                                                       /* inherit text color for consistency                 */
+}
+
+/* Optional escape hatch to force system font in any subtree          */ /* handy for debugging font issues                    */
+.system-font {                                                           /* utility class for system stack override            */
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto,            /* platform native font family                        */
+               "Helvetica Neue", Arial, sans-serif;                     /* common web-safe fallbacks                          */
 }
 
 /* ---------- Convenience tokens as utility classes (optional) ---------- */ /* useful before Tailwind mapping lands               */
@@ -59,4 +99,30 @@
 .text-text     { color: var(--text); }                                  /* primary text helper                                 */
 .text-muted    { color: var(--muted); }                                 /* secondary text helper                               */
 .border-border { border-color: var(--border); }                         /* border color helper                                 */
+
+/* ---------- Focus ring helper (matches --focus) ---------- */          /* consistent, accessible focus outlines              */
+.focus-ring {                                                            /* utility class for custom focus-visible styling     */
+  outline: none;                                                        /* remove default outline                             */
+}
+.focus-ring:focus-visible {                                              /* visible focus only for keyboard navigation         */
+  box-shadow: 0 0 0 2px var(--focus);                                   /* 2px focus ring in accent color                     */
+  border-radius: inherit;                                               /* respect element’s radius                           */
+}
+
+/* ---------- Button state helpers (semantic) ---------- */               /* consistent hover/active using accent token         */
+.btn-accent {                                                            /* primary action button base                         */
+  background: var(--accent);                                            /* accent background                                  */
+  color: var(--on-accent);                                              /* readable text on accent                            */
+}
+.btn-accent:hover {                                                      /* hover state                                         */
+  filter: brightness(1.08);                                             /* +8% luminance (per guidelines)                     */
+}
+.btn-accent:active {                                                     /* active/pressed state                                */
+  filter: brightness(0.92);                                             /* −8% luminance                                       */
+}
+.btn-accent:disabled {                                                   /* disabled state                                      */
+  opacity: 0.5;                                                         /* lower contrast                                      */
+  pointer-events: none;                                                 /* non-interactive                                     */
+}
+                    /* border color helper                                 */
 
